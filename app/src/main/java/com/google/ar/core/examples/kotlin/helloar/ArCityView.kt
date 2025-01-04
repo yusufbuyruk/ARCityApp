@@ -28,7 +28,7 @@ import com.google.ar.core.examples.java.common.helpers.SnackbarHelper
 import com.google.ar.core.examples.java.common.helpers.TapHelper
 
 /** Contains UI elements for Hello AR. */
-class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
+class ArCityView(val activity: ArCityActivity) : DefaultLifecycleObserver {
   val root = View.inflate(activity, R.layout.activity_main, null)
   val surfaceView = root.findViewById<GLSurfaceView>(R.id.surfaceview)
   val settingsButton =

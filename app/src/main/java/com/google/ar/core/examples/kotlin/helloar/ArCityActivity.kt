@@ -39,14 +39,14 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
  * ARCore API. The application will display any detected planes and will allow the user to tap on a
  * plane to place a 3D model.
  */
-class HelloArActivity : AppCompatActivity() {
+class ArCityActivity : AppCompatActivity() {
   companion object {
-    private const val TAG = "HelloArActivity"
+    private const val TAG = "ArCityActivity"
   }
 
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
-  lateinit var view: HelloArView
-  lateinit var renderer: HelloArRenderer
+  lateinit var view: ArCityView
+  lateinit var renderer: ArCityRenderer
 
   val instantPlacementSettings = InstantPlacementSettings()
   val depthSettings = DepthSettings()
@@ -79,11 +79,11 @@ class HelloArActivity : AppCompatActivity() {
     lifecycle.addObserver(arCoreSessionHelper)
 
     // Set up the Hello AR renderer.
-    renderer = HelloArRenderer(this)
+    renderer = ArCityRenderer(this)
     lifecycle.addObserver(renderer)
 
     // Set up Hello AR UI.
-    view = HelloArView(this)
+    view = ArCityView(this)
     lifecycle.addObserver(view)
     setContentView(view.root)
 

@@ -40,7 +40,7 @@
       tools:ignore="GoogleAppIndexingWarning">
 
     <activity
-        android:name="com.google.ar.core.examples.kotlin.helloar.HelloArActivity"
+        android:name="com.google.ar.core.examples.kotlin.helloar.ArCityActivity"
         android:configChanges="orientation|screenSize"
         android:exported="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"

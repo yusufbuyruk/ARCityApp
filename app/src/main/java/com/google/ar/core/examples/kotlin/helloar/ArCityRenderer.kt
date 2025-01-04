@@ -50,10 +50,10 @@ import java.io.IOException
 import java.nio.ByteBuffer
 
 /** Renders the HelloAR application using our example Renderer. */
-class HelloArRenderer(val activity: HelloArActivity) :
+class ArCityRenderer(val activity: ArCityActivity) :
   SampleRender.Renderer, DefaultLifecycleObserver {
   companion object {
-    val TAG = "HelloArRenderer"
+    val TAG = "ArCityRenderer"
 
     // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
     // constants.
