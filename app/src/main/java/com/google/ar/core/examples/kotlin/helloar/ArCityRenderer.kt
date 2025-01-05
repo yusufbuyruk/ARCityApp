@@ -572,7 +572,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
             cubeObjectShader.setTexture("u_AlbedoTexture", texture2)
              */
 
-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
+            render.draw(cubeObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
         }
 
 
