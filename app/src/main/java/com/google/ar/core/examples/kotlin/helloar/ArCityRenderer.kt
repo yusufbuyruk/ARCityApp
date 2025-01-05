@@ -259,7 +259,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
             virtualObjectAlbedoTexture = Texture.createSolidColorTexture(
                 render,
-                Building.randomColor(),// 0xFFFF0000.toInt(),
+                RandomColor.nextColor(),// 0xFFFF0000.toInt(),
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.LINEAR
             )
@@ -681,10 +681,13 @@ class Building(
     val anchor: Anchor,
     val plane: Plane,
     val scaleFactor: Float,
-    val shader: Shader
-) {
+    val shader: Shader,
+    val color: Int = RandomColor.nextColor()
+)
+
+class RandomColor {
     companion object {
-        fun randomColor(): Int {
+        fun nextColor(): Int {
             val alpha = 0xFF
             val red = Random.nextInt(0, 256)
             val green = Random.nextInt(0, 256)
