@@ -109,6 +109,12 @@ class ArCityRenderer(val activity: ArCityActivity) :
   lateinit var virtualObjectAlbedoTexture: Texture
   lateinit var virtualObjectAlbedoInstantPlacementTexture: Texture
 
+  // Cube object (ARCore cube)
+  lateinit var cubeObjectMesh: Mesh
+  lateinit var cubeObjectShader: Shader
+  lateinit var cubeObjectAlbedoTexture: Texture
+  lateinit var cubeObjectAlbedoInstantPlacementTexture: Texture
+
   private val wrappedAnchors = mutableListOf<WrappedAnchor>()
 
   // Environmental HDR
@@ -240,6 +246,23 @@ class ArCityRenderer(val activity: ArCityActivity) :
           .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
           .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
           .setTexture("u_DfgTexture", dfgTexture)
+
+      cubeObjectMesh = Mesh.createCubeMesh(render)
+      cubeObjectAlbedoTexture = Texture.createSolidColorTexture(render, 0xFFFF0000.toInt(), Texture.WrapMode.CLAMP_TO_EDGE, Texture.ColorFormat.LINEAR)
+      cubeObjectAlbedoInstantPlacementTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
+      val cubeObjectPbrTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
+      cubeObjectShader =
+        Shader.createFromAssets(
+          render,
+          "shaders/environmental_hdr.vert",
+          "shaders/environmental_hdr.frag",
+          mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
+        )
+          .setTexture("u_AlbedoTexture", cubeObjectAlbedoTexture)
+          .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", cubeObjectPbrTexture)
+          .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
+          .setTexture("u_DfgTexture", dfgTexture)
+
     } catch (e: IOException) {
       Log.e(TAG, "Failed to read a required asset file", e)
       showError("Failed to read a required asset file: $e")
