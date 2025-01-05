@@ -534,6 +534,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
       hitResultList.firstOrNull { hit ->
         when (val trackable = hit.trackable!!) {
           is Plane ->
+            trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING &&
             trackable.isPoseInPolygon(hit.hitPose) &&
               PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
           is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
