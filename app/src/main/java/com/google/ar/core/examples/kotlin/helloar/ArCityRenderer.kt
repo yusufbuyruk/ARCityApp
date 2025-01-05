@@ -462,6 +462,11 @@ class ArCityRenderer(val activity: ArCityActivity) :
         }
 
         horizontalPlanes.removeIf { it.subsumedBy != null }
+        // Removes planes already subsumed by other larger planes.
+        horizontalPlanes.removeIf { it.subsumedBy != null && horizontalPlanes.contains(it.subsumedBy) }
+
+        // Sorts planes by their surface area in descending order.
+        horizontalPlanes.sortByDescending { it.extentX * it.extentZ }
 
         for (horizontalPlane in horizontalPlanes)
         {
