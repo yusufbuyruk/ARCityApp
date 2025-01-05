@@ -48,7 +48,7 @@ import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
-
+import kotlin.random.Random
 
 /** Renders the HelloAR application using our example Renderer. */
 class ArCityRenderer(val activity: ArCityActivity) :
@@ -259,7 +259,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
             virtualObjectAlbedoTexture = Texture.createSolidColorTexture(
                 render,
-                0xFFFF0000.toInt(),
+                Building.randomColor(),// 0xFFFF0000.toInt(),
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.LINEAR
             )
@@ -711,3 +711,21 @@ private data class WrappedAnchor(
     val anchor: Anchor,
     val trackable: Trackable,
 )
+
+class Building(
+    val anchor: Anchor,
+    val plane: Plane,
+    val scaleFactor: Float,
+    val shader: Shader
+) {
+    companion object {
+        fun randomColor(): Int {
+            val alpha = 0xFF
+            val red = Random.nextInt(0, 256)
+            val green = Random.nextInt(0, 256)
+            val blue = Random.nextInt(0, 256)
+
+            return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+        }
+    }
+}
