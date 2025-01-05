@@ -513,13 +513,15 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             // centerPose.tx()
             // centerPose.tx()
+            // centerPose.ty()
+            // centerPose.tz()
 
             val centerPosition = centerPose.translation // world position
 
             val extentX = plane.extentX
             val extentZ = plane.extentZ
 
-            // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose}")
+            // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
         }
 
 
