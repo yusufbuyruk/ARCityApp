@@ -209,7 +209,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
       val pointCloudVertexBuffers = arrayOf(pointCloudVertexBuffer)
       pointCloudMesh =
         Mesh(render, Mesh.PrimitiveMode.POINTS, /*indexBuffer=*/ null, pointCloudVertexBuffers)
-
+/*
       // Virtual object to render (ARCore pawn)
       virtualObjectAlbedoTexture =
         Texture.createFromAsset(
@@ -234,6 +234,13 @@ class ArCityRenderer(val activity: ArCityActivity) :
           Texture.WrapMode.CLAMP_TO_EDGE,
           Texture.ColorFormat.LINEAR
         )
+ */
+
+      virtualObjectAlbedoTexture = Texture(render, Texture.Target.TEXTURE_2D, Texture.WrapMode.CLAMP_TO_EDGE)
+      virtualObjectAlbedoInstantPlacementTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
+      val virtualObjectPbrTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
+      virtualObjectAlbedoTexture = Texture.createSolidColorTexture(render, 0xFFFF0000.toInt(), Texture.WrapMode.CLAMP_TO_EDGE, Texture.ColorFormat.LINEAR)
+
       virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
       virtualObjectShader =
         Shader.createFromAssets(
