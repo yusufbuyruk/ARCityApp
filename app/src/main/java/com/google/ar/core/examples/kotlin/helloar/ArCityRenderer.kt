@@ -49,6 +49,7 @@ import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
 
+
 /** Renders the HelloAR application using our example Renderer. */
 class ArCityRenderer(val activity: ArCityActivity) :
     SampleRender.Renderer, DefaultLifecycleObserver {
@@ -454,15 +455,63 @@ class ArCityRenderer(val activity: ArCityActivity) :
             }
             if (plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
                 if (!horizontalPlanes.contains(plane))
+                {
                     horizontalPlanes.add(plane)
+                }
             }
         }
+
+        horizontalPlanes.removeIf { it.subsumedBy != null }
+
+        for (horizontalPlane in horizontalPlanes)
+        {
+            /*
+            wrappedAnchors.add(
+                WrappedAnchor(
+                    horizontalPlane.createAnchor(horizontalPlane.centerPose),
+                    horizontalPlane
+                )
+            )
+            */
+        }
+
 
         if (horizontalPlanes.isNotEmpty())
         {
             val plane: Plane = horizontalPlanes[0] /*planes.first()*/
-            activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose}")
+
+            val centerPose = plane.centerPose
+
+            //Pose.makeTranslation(tx, ty, tz)
+            //val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
+/*
+            if (plane.isPoseInPolygon(newPose)) {
+                val anchor = plane.createAnchor(newPose)
+                placeObject(anchor)
+            }
+
+            if (plane.isPoseInExtents(newPose))
+            {
+
+            }
+*/
+
+            val xAxis = centerPose.xAxis
+            val yAxis = centerPose.yAxis
+            val zAxis = centerPose.zAxis
+
+            // centerPose.tx()
+            // centerPose.tx()
+
+            val centerPosition = centerPose.translation // world position
+
+            val extentX = plane.extentX
+            val extentZ = plane.extentZ
+
+            // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose}")
         }
+
+
 
         // -- Draw occluded virtual objects
 
@@ -498,6 +547,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 }
             virtualObjectShader.setTexture("u_AlbedoTexture", texture)
 
+            /*
             cubeObjectShader.setMat4("u_ModelView", modelViewMatrix)
             cubeObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
             val texture2 =
@@ -509,9 +559,11 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     cubeObjectAlbedoTexture
                 }
             cubeObjectShader.setTexture("u_AlbedoTexture", texture2)
+             */
 
             render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
         }
+
 
         // Compose the virtual scene with the background.
         backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, Z_NEAR, Z_FAR)
@@ -614,7 +666,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
         if (firstHitResult != null) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 5) {
+            if (wrappedAnchors.size >= 100) {
                 wrappedAnchors[0].anchor.detach()
                 wrappedAnchors.removeAt(0)
             }
