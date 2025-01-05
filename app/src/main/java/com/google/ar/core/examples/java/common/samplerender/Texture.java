@@ -168,6 +168,41 @@ public class Texture implements Closeable {
     return texture;
   }
 
+  public static Texture createSolidColorTexture(
+          SampleRender render, int color, WrapMode wrapMode, ColorFormat colorFormat) {
+
+    // Tek renkli bir Bitmap oluştur
+    Bitmap bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    bitmap.setPixel(0, 0, color);  // Tüm piksellere aynı rengi uygula
+
+    // Texture oluştur
+    Texture texture = new Texture(render, Target.TEXTURE_2D, wrapMode);
+
+    ByteBuffer buffer = ByteBuffer.allocateDirect(bitmap.getByteCount());
+    bitmap.copyPixelsToBuffer(buffer);
+    buffer.rewind();
+
+    // Tek renkli Bitmap'i OpenGL texture'ına yükle
+    GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, texture.getTextureId());
+    GLError.maybeThrowGLException("Failed to bind texture", "glBindTexture");
+    GLES30.glTexImage2D(
+            GLES30.GL_TEXTURE_2D,
+            0, // Mipmap seviyesiz
+            colorFormat.glesEnum,
+            bitmap.getWidth(),
+            bitmap.getHeight(),
+            0, // Border (sınır yok)
+            GLES30.GL_RGBA,
+            GLES30.GL_UNSIGNED_BYTE,
+            buffer);
+    GLError.maybeThrowGLException("Failed to populate texture data", "glTexImage2D");
+    GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D); // Mipmap oluştur
+    GLError.maybeThrowGLException("Failed to generate mipmaps", "glGenerateMipmap");
+
+    bitmap.recycle(); // Bitmap'i serbest bırak
+    return texture;
+  }
+
   @Override
   public void close() {
     if (textureId[0] != 0) {
