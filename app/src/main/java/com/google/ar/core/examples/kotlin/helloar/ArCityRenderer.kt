@@ -454,6 +454,19 @@ class ArCityRenderer(val activity: ArCityActivity) :
           virtualObjectAlbedoTexture
         }
       virtualObjectShader.setTexture("u_AlbedoTexture", texture)
+
+      cubeObjectShader.setMat4("u_ModelView", modelViewMatrix)
+      cubeObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
+      val texture2 =
+        if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
+          InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
+        ) {
+          cubeObjectAlbedoInstantPlacementTexture
+        } else {
+          cubeObjectAlbedoTexture
+        }
+      cubeObjectShader.setTexture("u_AlbedoTexture", texture2)
+
       render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
     }
 
