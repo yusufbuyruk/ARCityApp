@@ -399,6 +399,18 @@ class ArCityRenderer(val activity: ArCityActivity) :
       projectionMatrix
     )
 */
+    /*
+    val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
+
+    for ((index, plane) in allPlanes.withIndex()) {
+      if (plane.type == Plane.Type.VERTICAL) {
+        activity.view.snackbarHelper.showMessage(
+          activity,
+          "Plane Index $index ve ${plane.extentX}."
+        )
+      }
+    }
+    */
 
     // -- Draw occluded virtual objects
 
