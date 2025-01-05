@@ -512,7 +512,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
             val zAxis = centerPose.zAxis
 
             // centerPose.tx()
-            // centerPose.tx()
             // centerPose.ty()
             // centerPose.tz()
 
@@ -667,10 +666,10 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING &&
                     trackable.isPoseInPolygon(hit.hitPose) &&
                       PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
-                  is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
-                  is InstantPlacementPoint -> true
+                  // is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
+                  // is InstantPlacementPoint -> true
                   // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
-                  is DepthPoint -> true
+                  // is DepthPoint -> true
                   else -> false
                 }
               }
