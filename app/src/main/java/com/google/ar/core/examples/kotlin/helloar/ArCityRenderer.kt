@@ -387,7 +387,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
       }
       Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
       pointCloudShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
-      // render.draw(pointCloudMesh, pointCloudShader)
+      render.draw(pointCloudMesh, pointCloudShader)
     }
 
 
