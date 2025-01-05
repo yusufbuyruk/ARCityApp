@@ -247,7 +247,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
           .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
           .setTexture("u_DfgTexture", dfgTexture)
 
-      cubeObjectMesh = Mesh.createCubeMesh(render)
+      cubeObjectMesh = Mesh.createFromAsset(render, "models/cube.obj")
       cubeObjectAlbedoTexture = Texture.createSolidColorTexture(render, 0xFFFF0000.toInt(), Texture.WrapMode.CLAMP_TO_EDGE, Texture.ColorFormat.LINEAR)
       cubeObjectAlbedoInstantPlacementTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
       val cubeObjectPbrTexture = Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
