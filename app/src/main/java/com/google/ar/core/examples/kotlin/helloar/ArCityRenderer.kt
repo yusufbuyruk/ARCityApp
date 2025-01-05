@@ -413,6 +413,10 @@ class ArCityRenderer(val activity: ArCityActivity) :
       // during calls to session.update() as ARCore refines its estimate of the world.
       anchor.pose.toMatrix(modelMatrix, 0)
 
+      // SCALE & TRANSLATE
+      // Matrix.scaleM(modelMatrix, 0, 0.2f, 0.2f, 0.2f)
+      // Matrix.translateM(modelMatrix, 0, 1f, 0f, 0f)
+
       // Calculate model/view/projection matrices
       Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0)
       Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0)
