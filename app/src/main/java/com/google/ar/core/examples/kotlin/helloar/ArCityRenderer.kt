@@ -390,7 +390,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
       // render.draw(pointCloudMesh, pointCloudShader)
     }
 
-/*
+
     // Visualize planes.
     planeRenderer.drawPlanes(
       render,
@@ -398,19 +398,21 @@ class ArCityRenderer(val activity: ArCityActivity) :
       camera.displayOrientedPose,
       projectionMatrix
     )
-*/
-    /*
+
+
     val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
 
     for ((index, plane) in allPlanes.withIndex()) {
-      if (plane.type == Plane.Type.VERTICAL) {
-        activity.view.snackbarHelper.showMessage(
-          activity,
-          "Plane Index $index ve ${plane.extentX}."
-        )
+      if (index == 0) {
+        if (plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
+          activity.view.snackbarHelper.showMessage(
+            activity,
+            "Plane Index $index | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose}"
+          )
+        }
       }
     }
-    */
+
 
     // -- Draw occluded virtual objects
 
