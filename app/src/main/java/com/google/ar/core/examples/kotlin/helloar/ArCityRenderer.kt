@@ -457,19 +457,23 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 if (!horizontalPlanes.contains(plane))
                 {
                     horizontalPlanes.add(plane)
+                    // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose.translation}")
                 }
             }
         }
 
-        horizontalPlanes.removeIf { it.subsumedBy != null }
         // Removes planes already subsumed by other larger planes.
         horizontalPlanes.removeIf { it.subsumedBy != null && horizontalPlanes.contains(it.subsumedBy) }
 
         // Sorts planes by their surface area in descending order.
         horizontalPlanes.sortByDescending { it.extentX * it.extentZ }
 
+        val sb = StringBuilder()
+
         for (horizontalPlane in horizontalPlanes)
         {
+            sb.append("${horizontalPlane.centerPose.translation[1]} | ")
+            // sb.append("${horizontalPlane.extentZ * horizontalPlane.extentX} | ")
             /*
             wrappedAnchors.add(
                 WrappedAnchor(
@@ -479,6 +483,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
             )
             */
         }
+
+        // activity.view.snackbarHelper.showMessage(activity, "${horizontalPlanes.size} | centerPose: $sb")
 
 
         if (horizontalPlanes.isNotEmpty())
