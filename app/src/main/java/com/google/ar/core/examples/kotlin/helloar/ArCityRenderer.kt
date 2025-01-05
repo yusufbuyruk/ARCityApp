@@ -666,7 +666,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
         if (firstHitResult != null) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 100) {
+            if (wrappedAnchors.size >= 20) {
                 wrappedAnchors[0].anchor.detach()
                 wrappedAnchors.removeAt(0)
             }
