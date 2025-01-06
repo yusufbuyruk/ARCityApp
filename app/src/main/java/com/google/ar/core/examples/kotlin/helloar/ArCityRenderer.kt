@@ -110,10 +110,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
     // Cube object (ARCore cube)
     lateinit var cubeObjectMesh: Mesh
     lateinit var cubeObjectShader: Shader
-    lateinit var cubeObjectAlbedoTexture: Texture
-    lateinit var cubeObjectAlbedoInstantPlacementTexture: Texture
-
-    lateinit var generatedShader: Shader
 
     private val customShaders = mutableListOf<Shader>()
     private val generatedShaders = mutableListOf<Shader>()
