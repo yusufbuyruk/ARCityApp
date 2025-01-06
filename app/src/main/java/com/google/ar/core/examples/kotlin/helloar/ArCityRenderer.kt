@@ -487,6 +487,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     for (row in 0 until gridSize) {
                         for (col in 0 until gridSize) {
 
+                            if (row % 3 == 0 || col % 4 == 0) continue
+
                             val tx = centerPose.tx() + (col - gridSize / 2) * spacing
                             val tz = centerPose.tz() + (row - gridSize / 2) * spacing
 
