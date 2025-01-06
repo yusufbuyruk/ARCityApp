@@ -112,6 +112,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
     lateinit var cubeObjectAlbedoTexture: Texture
     lateinit var cubeObjectAlbedoInstantPlacementTexture: Texture
 
+    lateinit var generatedShader: Shader
+
     private val customShaders = mutableListOf<Shader>()
 
     private val wrappedAnchors = mutableListOf<WrappedAnchor>()
@@ -713,6 +715,44 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
     private fun showError(errorMessage: String) =
         activity.view.snackbarHelper.showError(activity, errorMessage)
+
+
+    private fun generateShader(render: SampleRender) : Shader {
+        val albedoTexture = Texture.createSolidColorTexture(
+            render,
+            ColorToInt.randomColor(),
+            Texture.WrapMode.CLAMP_TO_EDGE,
+            Texture.ColorFormat.SRGB
+        )
+        val albedoInstantPlacementTexture = Texture.createSolidColorTexture(
+            render,
+            ColorToInt.color(120, 194, 123),
+            Texture.WrapMode.CLAMP_TO_EDGE,
+            Texture.ColorFormat.SRGB
+        )
+        val pbrTexture = Texture.createSolidColorTexture(
+            render,
+            ColorToInt.color(228, 228, 228),
+            Texture.WrapMode.CLAMP_TO_EDGE,
+            Texture.ColorFormat.SRGB
+        )
+
+        val shader =
+            Shader.createFromAssets(
+                render,
+                "shaders/environmental_hdr.vert",
+                "shaders/environmental_hdr.frag",
+                mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
+            )
+                .setTexture("u_AlbedoTexture", albedoTexture)
+                .setTexture(
+                    "u_RoughnessMetallicAmbientOcclusionTexture",
+                    pbrTexture
+                )
+                .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
+                .setTexture("u_DfgTexture", dfgTexture)
+        return shader
+    }
 }
 
 /**
