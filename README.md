@@ -1,7 +1,7 @@
 # AR City Builder  
 
 ## Overview  
-**AR City Builder** is an Android augmented reality (AR) application developed using **Kotlin** and **OpenGL ES 3.0**. The app detects floors in the environment and renders a virtual city with randomly positioned and colored buildings. Users can also interact by tapping on the screen to place additional objects (e.g., cars) at desired locations.
+**AR City Builder** is an Android augmented reality (AR) application developed using **Kotlin** and **OpenGL ES 3.0**.  The app detects floors in the environment and renders a virtual city with randomly positioned and colored buildings. Users can also interact by tapping on the screen to place additional objects (e.g., cars) at desired locations. The apps display any detected planes and allow the user to tap on a plane to place a 3D model. This app uses OpenGL, a programming interface for rendering 2D and 3D vector graphics. The app displays any detected planes and allows the user to tap on a plane to place a 3D model.
 
 ## Features  
 - **Floor Detection:** Anchors a virtual city on detected floors.  
@@ -11,10 +11,9 @@
 
 ## Prerequisites  
 To set up and run the project, ensure you have:  
-- **Android Studio** (latest version recommended)  
+- **Android Studio** version 3.1 or higher with Android SDK Platform version 7.0 (API level 24) or higher. (latest version recommended)  
 - **OpenGL ES 3.0** compatible Android device  
 - **ARCore SDK for Android**  
-- **Java Development Kit (JDK)** version 11 or later  
 
 ## Setup Instructions  
 
@@ -57,10 +56,11 @@ To enable AR functionality, follow these steps:
 - **Custom 3D Models:** Replace the default "ar pawn" model by adding your own 3D model to the `assets` folder and updating the rendering logic in the source code.  
 
 ## Future Improvements
-- **Dynamic Object Generation:** While tracking the growing plane, generate new objects as the detected floor expands. Use the **Breadth-First Search (BFS)** algorithm to calculate edge objects and enqueue them for efficient placement. 
+- **Dynamic Object Generation:** While tracking the growing plane, generate new objects as the detected floor expands. Use the **Breadth-First Search (BFS)** algorithm to calculate edge objects and enqueue them for efficient placement. For more details, refer to the [CellController.kt](app/src/main/java/com/google/ar/core/examples/kotlin/helloar/CellController.kt) file.
 - **Enhanced Building Textures:** Add texture mapping for more visually appealing buildings.  
 - **UI Integration:** Implement a user interface to select different objects for placement.  
-- **Advanced Rendering:** Add lighting, shadows, and shaders for improved realism.  
+- **Advanced Rendering:** Add lighting, shadows, and shaders for improved realism.
+- **Collision Checking:** Implement collision detection to avoid object overlap and improve interactions between objects in the AR environment.
 
 ## License  
 This project is licensed under the [MIT License](LICENSE).  
