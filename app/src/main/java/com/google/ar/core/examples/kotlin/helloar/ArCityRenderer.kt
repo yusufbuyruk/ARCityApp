@@ -433,53 +433,53 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
 
-        // for ((index, plane) in allPlanes.withIndex()) { }
+            // for ((index, plane) in allPlanes.withIndex()) { }
 
-        for (plane in allPlanes) {
-            if (plane.trackingState != TrackingState.TRACKING || plane.subsumedBy != null) {
-                continue
-            }
-            if (plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                if (!horizontalPlanes.contains(plane)) {
-                    horizontalPlanes.add(plane)
-                    // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose.translation}")
+            for (plane in allPlanes) {
+                if (plane.trackingState != TrackingState.TRACKING || plane.subsumedBy != null) {
+                    continue
+                }
+                if (plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
+                    if (!horizontalPlanes.contains(plane)) {
+                        horizontalPlanes.add(plane)
+                        // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose.translation}")
+                    }
                 }
             }
-        }
 
-        // Removes planes already subsumed by other larger planes.
-        horizontalPlanes.removeIf { it.subsumedBy != null && horizontalPlanes.contains(it.subsumedBy) }
+            // Removes planes already subsumed by other larger planes.
+            horizontalPlanes.removeIf { it.subsumedBy != null && horizontalPlanes.contains(it.subsumedBy) }
 
-        // Sorts planes by their surface area in descending order.
-        horizontalPlanes.sortByDescending { it.extentX * it.extentZ }
+            // Sorts planes by their surface area in descending order.
+            horizontalPlanes.sortByDescending { it.extentX * it.extentZ }
 
-        if (horizontalPlanes.isNotEmpty()) {
-            val plane: Plane = horizontalPlanes[0] /*planes.first()*/
+            if (horizontalPlanes.isNotEmpty()) {
+                val plane: Plane = horizontalPlanes[0] /*planes.first()*/
 
-            val planeArea = plane.extentX * plane.extentZ
+                val planeArea = plane.extentX * plane.extentZ
 
-            // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
-            if (planeArea > 2f) {
+                // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
+                if (planeArea > 4f) {
 
-                // initialize city
-                val gridSize = 4
-                val spacing = 0.5f
-                var centerPose = plane.centerPose
+                    // initialize city
+                    val gridSize = 20
+                    val spacing = 0.4f
+                    var centerPose = plane.centerPose
 
-                val extentX = plane.extentX
-                val extentZ = plane.extentZ
+                    val extentX = plane.extentX
+                    val extentZ = plane.extentZ
 
-                for (row in 0 until gridSize) {
-                    for (col in 0 until gridSize) {
+                    for (row in 0 until gridSize) {
+                        for (col in 0 until gridSize) {
 
-                        val tx = centerPose.tx() + (col - gridSize / 2) * spacing
-                        val tz = centerPose.tz() + (row - gridSize / 2) * spacing
+                            val tx = centerPose.tx() + (col - gridSize / 2) * spacing
+                            val tz = centerPose.tz() + (row - gridSize / 2) * spacing
 
-                        // world rotation
-                        val newPose = Pose.makeTranslation(tx, centerPose.ty(), tz)
+                            // world rotation
+                            val newPose = Pose.makeTranslation(tx, centerPose.ty(), tz)
 
-                        // alternative - local rotation
-                        // val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
+                            // alternative - local rotation
+                            // val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
 
                             if (plane.isPoseInPolygon(newPose)) {
                                 val anchor = plane.createAnchor(newPose)
@@ -517,7 +517,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
             anchor.pose.toMatrix(modelMatrix, 0)
 
             // SCALE & TRANSLATE
-            Matrix.scaleM(modelMatrix, 0, 1f, 2f, 1f)
+            // Matrix.scaleM(modelMatrix, 0, 1f, 2f, 1f)
             // Matrix.translateM(modelMatrix, 0, 1f, 0f, 0f)
 
             // Calculate model/view/projection matrices
@@ -543,9 +543,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
             virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectTexture)
             */
 
-
             render.draw(virtualObject.mesh, virtualObject.shader, virtualSceneFramebuffer)
-            //render.draw(cubeObjectMesh, cubeObjectShader, virtualSceneFramebuffer)
+            // render.draw(cubeObjectMesh, generatedShaders[2], virtualSceneFramebuffer)
         }
 
         for ((anchor, trackable, cubeObject) in cubeAnchors.filter { it.anchor.trackingState == TrackingState.TRACKING }) {
@@ -705,7 +704,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
         activity.view.snackbarHelper.showError(activity, errorMessage)
 
 
-    private fun generateShader(render: SampleRender) : Shader {
+    private fun generateShader(render: SampleRender): Shader {
         val albedoTexture = Texture.createSolidColorTexture(
             render,
             ColorToInt.randomColor(),
@@ -758,13 +757,13 @@ private data class CubeAnchor(
     val cubeObject: CubeObject
 )
 
-
 private data class CubeObject(
     val anchor: Anchor,
     val plane: Plane,
     val scaleFactor: Float,
     val shader: Shader,
 )
+
 
 /*
 class CubeObject(
@@ -790,7 +789,7 @@ class CubeObject(
 }
 */
 
-data class ArSceneObject (
+data class ArSceneObject(
     val mesh: Mesh,
     val shader: Shader
 )
