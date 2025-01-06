@@ -87,6 +87,16 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
         val CUBEMAP_RESOLUTION = 16
         val CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32
+
+        // Custom Settings
+        val TARGET_PLANE_AREA: Float = 10f
+        val GRID_SIZE: Int = 20
+        val SPACING: Float = 0.25f
+        val MIN_SCALE_FACTOR: Float = 1f
+        val MAX_SCALE_FACTOR: Float = 2.5f
+
+        val MAX_AR_PAWN_ANCHOR_COUNT: Int = 5
+        //
     }
 
     lateinit var render: SampleRender
@@ -459,11 +469,11 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 val planeArea = plane.extentX * plane.extentZ
 
                 // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
-                if (planeArea > 4f) {
+                if (planeArea > TARGET_PLANE_AREA) {
 
                     // initialize city
-                    val gridSize = 20
-                    val spacing = 0.4f
+                    val gridSize = GRID_SIZE
+                    val spacing = SPACING
                     var centerPose = plane.centerPose
 
                     val extentX = plane.extentX
@@ -483,7 +493,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
                             if (plane.isPoseInPolygon(newPose)) {
                                 val anchor = plane.createAnchor(newPose)
-                                val randomScaleFactor = 1.0f + Random.nextFloat() * (4.0f - 1.0f)
+                                val randomScaleFactor = MIN_SCALE_FACTOR + Random.nextFloat() * (MAX_SCALE_FACTOR - MIN_SCALE_FACTOR)
                                 val cubeObject =
                                     CubeObject(anchor, plane, randomScaleFactor, generatedShaders.random())
                                 val cubeAnchor = CubeAnchor(anchor, plane, cubeObject)
@@ -679,7 +689,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
         if (firstHitResult != null) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 20) {
+            if (wrappedAnchors.size >= MAX_AR_PAWN_ANCHOR_COUNT) {
                 wrappedAnchors[0].anchor.detach()
                 wrappedAnchors.removeAt(0)
             }
