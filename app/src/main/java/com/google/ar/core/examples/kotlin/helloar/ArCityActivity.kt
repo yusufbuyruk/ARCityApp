@@ -98,6 +98,11 @@ class ArCityActivity : AppCompatActivity() {
   fun configureSession(session: Session) {
     session.configure(
       session.config.apply {
+
+        // todo: PlaneFindingMode
+        // setPlaneFindingMode(Config.PlaneFindingMode.HORIZONTAL)
+        // planeFindingMode = Config.PlaneFindingMode.HORIZONTAL
+
         lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
 
         // Depth API is used if it is configured in Hello AR's settings.

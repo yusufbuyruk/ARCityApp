@@ -24,6 +24,8 @@ import de.javagl.obj.ObjUtils;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -148,6 +150,7 @@ public class Mesh implements Closeable {
       return new Mesh(render, Mesh.PrimitiveMode.TRIANGLES, indexBuffer, vertexBuffers);
     }
   }
+
 
   @Override
   public void close() {
