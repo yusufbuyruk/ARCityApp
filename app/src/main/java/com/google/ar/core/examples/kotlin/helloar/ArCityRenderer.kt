@@ -115,6 +115,9 @@ class ArCityRenderer(val activity: ArCityActivity) :
     lateinit var generatedShader: Shader
 
     private val customShaders = mutableListOf<Shader>()
+    private val generatedShaders = mutableListOf<Shader>()
+
+    private val cubeObjects = mutableListOf<CubeObject>()
 
     private val wrappedAnchors = mutableListOf<WrappedAnchor>()
 
@@ -292,21 +295,16 @@ class ArCityRenderer(val activity: ArCityActivity) :
             )
 
             cubeObjectMesh = Mesh.createFromAsset(render, "models/cube.obj")
-            cubeObjectShader =
-                Shader.createFromAssets(
-                    render,
-                    "shaders/environmental_hdr.vert",
-                    "shaders/environmental_hdr.frag",
-                    mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
-                )
-                    .setTexture("u_AlbedoTexture", cubeObjectAlbedoTexture)
-                    .setTexture(
-                        "u_RoughnessMetallicAmbientOcclusionTexture",
-                        cubeObjectPbrTexture
-                    )
-                    .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
-                    .setTexture("u_DfgTexture", dfgTexture)
 
+            for (i in 1..10)
+            {
+                val shader = generateShader(render)
+                generatedShaders.add(shader)
+                customShaders.add(shader)
+            }
+
+
+            cubeObjectShader = generateShader(render)
             customShaders.add(cubeObjectShader)
 
         } catch (e: IOException) {
