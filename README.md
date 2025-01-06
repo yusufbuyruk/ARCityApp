@@ -3,6 +3,16 @@
 ## Overview  
 **AR City Builder** is an Android augmented reality (AR) application developed using **Kotlin** and **OpenGL ES 3.0**.  The app detects floors in the environment and renders a virtual city with randomly positioned and colored buildings. Users can also interact by tapping on the screen to place additional objects (e.g., cars) at desired locations. The apps display any detected planes and allow the user to tap on a plane to place a 3D model. This app uses OpenGL, a programming interface for rendering 2D and 3D vector graphics. The app displays any detected planes and allows the user to tap on a plane to place a 3D model.
 
+## Videos
+
+[AR City App 01 - Youtube](https://www.youtube.com/shorts/RQd0L5ZmSdI)
+
+[AR City App 02 - Youtube](https://youtube.com/shorts/v2rhMG6ZX5A)
+
+[AR City App 03 - Youtube](https://youtube.com/shorts/X4ZX-zKIsZ0)
+
+## Screenshots
+
 [![AR City Builder](readme-images/ar-city-app-01.png)]
 
 [![AR City Builder](readme-images/ar-city-app-02.png)]
