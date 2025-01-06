@@ -487,24 +487,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
         // Sorts planes by their surface area in descending order.
         horizontalPlanes.sortByDescending { it.extentX * it.extentZ }
 
-        val sb = StringBuilder()
-
-        for (horizontalPlane in horizontalPlanes) {
-            sb.append("${horizontalPlane.centerPose.translation[1]} | ")
-            // sb.append("${horizontalPlane.extentZ * horizontalPlane.extentX} | ")
-            /*
-            wrappedAnchors.add(
-                WrappedAnchor(
-                    horizontalPlane.createAnchor(horizontalPlane.centerPose),
-                    horizontalPlane
-                )
-            )
-            */
-        }
-
-        // activity.view.snackbarHelper.showMessage(activity, "${horizontalPlanes.size} | centerPose: $sb")
-
-
         if (horizontalPlanes.isNotEmpty()) {
             val plane: Plane = horizontalPlanes[0] /*planes.first()*/
 
