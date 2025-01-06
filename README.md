@@ -59,7 +59,8 @@ To enable AR functionality, follow these steps:
 - **Dynamic Object Generation:** While tracking the growing plane, generate new objects as the detected floor expands. Use the **Breadth-First Search (BFS)** algorithm to calculate edge objects and enqueue them for efficient placement. For more details, refer to the [CellController.kt](app/src/main/java/com/google/ar/core/examples/kotlin/helloar/CellController.kt) file.
 - **Enhanced Building Textures:** Add texture mapping for more visually appealing buildings.  
 - **UI Integration:** Implement a user interface to select different objects for placement.  
-- **Advanced Rendering:** Add lighting, shadows, and shaders for improved realism.  
+- **Advanced Rendering:** Add lighting, shadows, and shaders for improved realism.
+- **Collision Checking:** Implement collision detection to avoid object overlap and improve interactions between objects in the AR environment.
 
 ## License  
 This project is licensed under the [MIT License](LICENSE).  
