@@ -764,13 +764,37 @@ private data class WrappedAnchor(
     val trackable: Trackable,
 )
 
-class Building(
+
+private data class CubeObject(
     val anchor: Anchor,
     val plane: Plane,
     val scaleFactor: Float,
     val shader: Shader,
-    val color: Int = ColorToInt.randomColor()
 )
+
+/*
+class CubeObject(
+    val anchor: Anchor,
+    val plane: Plane,
+    val scaleFactor: Float,
+    val color: Int
+) : Trackable {
+    lateinit var shader: Shader
+    lateinit var mesh: Mesh
+
+    override fun getTrackingState(): TrackingState {
+        return TrackingState.TRACKING
+    }
+
+    override fun createAnchor(pose: Pose?): Anchor {
+        return anchor
+    }
+
+    override fun getAnchors(): MutableCollection<Anchor> {
+        return mutableListOf(anchor)
+    }
+}
+*/
 
 data class ArSceneObject (
     val mesh: Mesh,
