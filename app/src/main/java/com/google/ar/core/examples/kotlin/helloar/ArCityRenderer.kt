@@ -104,16 +104,15 @@ class ArCityRenderer(val activity: ArCityActivity) :
     var lastPointCloudTimestamp: Long = 0
 
     // Virtual object (ARCore pawn)
-    lateinit var virtualObjectMesh: Mesh
-    lateinit var virtualObjectShader: Shader
-    lateinit var virtualObjectAlbedoTexture: Texture
-    lateinit var virtualObjectAlbedoInstantPlacementTexture: Texture
+    lateinit var virtualObject: ArSceneObject
 
     // Cube object (ARCore cube)
     lateinit var cubeObjectMesh: Mesh
     lateinit var cubeObjectShader: Shader
     lateinit var cubeObjectAlbedoTexture: Texture
     lateinit var cubeObjectAlbedoInstantPlacementTexture: Texture
+
+    private val customShaders = mutableListOf<Shader>()
 
     private val wrappedAnchors = mutableListOf<WrappedAnchor>()
 
@@ -225,7 +224,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 )
 
             // Virtual object to render (ARCore pawn)
-            virtualObjectAlbedoTexture =
+            val virtualObjectAlbedoTexture =
                 Texture.createFromAsset(
                     render,
                     "models/pawn_albedo.png",
@@ -233,7 +232,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     Texture.ColorFormat.SRGB
                 )
 
-            virtualObjectAlbedoInstantPlacementTexture =
+            val virtualObjectAlbedoInstantPlacementTexture =
                 Texture.createFromAsset(
                     render,
                     "models/pawn_albedo_instant_placement.png",
@@ -251,6 +250,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
             virtualObjectShader =
+            val virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
+            val virtualObjectShader =
                 Shader.createFromAssets(
                     render,
                     "shaders/environmental_hdr.vert",
@@ -264,6 +265,10 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     )
                     .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
                     .setTexture("u_DfgTexture", dfgTexture)
+
+            virtualObject = ArSceneObject(virtualObjectMesh, virtualObjectShader)
+
+            customShaders.add(virtualObjectShader)
 
             cubeObjectAlbedoTexture = Texture.createSolidColorTexture(
                 render,
@@ -299,6 +304,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     )
                     .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
                     .setTexture("u_DfgTexture", dfgTexture)
+
+            customShaders.add(cubeObjectShader)
 
         } catch (e: IOException) {
             Log.e(TAG, "Failed to read a required asset file", e)
@@ -545,6 +552,12 @@ class ArCityRenderer(val activity: ArCityActivity) :
             Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0)
             Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0)
 
+            customShaders.forEach { shader ->
+                shader.setMat4("u_ModelView", modelViewMatrix)
+                shader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
+            }
+
+            /*
             // Update shader properties and draw
             virtualObjectShader.setMat4("u_ModelView", modelViewMatrix)
             virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
@@ -560,21 +573,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
             virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectTexture)
 
 
-            cubeObjectShader.setMat4("u_ModelView", modelViewMatrix)
-            cubeObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
-            val cubeObjectTexture =
-                if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
-                    InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
-                ) {
-                    cubeObjectAlbedoInstantPlacementTexture
-                } else {
-                    cubeObjectAlbedoTexture
-                }
-
-            cubeObjectShader.setTexture("u_AlbedoTexture", cubeObjectTexture)
-
-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
-            // render.draw(cubeObjectMesh, cubeObjectShader, virtualSceneFramebuffer)
+            render.draw(virtualObject.mesh, virtualObject.shader, virtualSceneFramebuffer)
+            //render.draw(cubeObjectMesh, cubeObjectShader, virtualSceneFramebuffer)
         }
 
 
@@ -589,15 +589,20 @@ class ArCityRenderer(val activity: ArCityActivity) :
     /** Update state based on the current frame's light estimation. */
     private fun updateLightEstimation(lightEstimate: LightEstimate, viewMatrix: FloatArray) {
         if (lightEstimate.state != LightEstimate.State.VALID) {
-            virtualObjectShader.setBool("u_LightEstimateIsValid", false)
-            cubeObjectShader.setBool("u_LightEstimateIsValid", false)
+            customShaders.forEach { shader ->
+                shader.setBool("u_LightEstimateIsValid", false)
+            }
             return
         }
-        virtualObjectShader.setBool("u_LightEstimateIsValid", true)
-        cubeObjectShader.setBool("u_LightEstimateIsValid", true)
+        customShaders.forEach { shader ->
+            shader.setBool("u_LightEstimateIsValid", true)
+        }
+
         Matrix.invertM(viewInverseMatrix, 0, viewMatrix, 0)
-        virtualObjectShader.setMat4("u_ViewInverse", viewInverseMatrix)
-        cubeObjectShader.setMat4("u_ViewInverse", viewInverseMatrix)
+        customShaders.forEach { shader ->
+            shader.setMat4("u_ViewInverse", viewInverseMatrix)
+        }
+
         updateMainLight(
             lightEstimate.environmentalHdrMainLightDirection,
             lightEstimate.environmentalHdrMainLightIntensity,
@@ -617,10 +622,11 @@ class ArCityRenderer(val activity: ArCityActivity) :
         worldLightDirection[1] = direction[1]
         worldLightDirection[2] = direction[2]
         Matrix.multiplyMV(viewLightDirection, 0, viewMatrix, 0, worldLightDirection, 0)
-        virtualObjectShader.setVec4("u_ViewLightDirection", viewLightDirection)
-        cubeObjectShader.setVec4("u_ViewLightDirection", viewLightDirection)
-        virtualObjectShader.setVec3("u_LightIntensity", intensity)
-        cubeObjectShader.setVec3("u_LightIntensity", intensity)
+
+        customShaders.forEach { shader ->
+            shader.setVec4("u_ViewLightDirection", viewLightDirection)
+            shader.setVec3("u_LightIntensity", intensity)
+        }
     }
 
     private fun updateSphericalHarmonicsCoefficients(coefficients: FloatArray) {
@@ -645,14 +651,10 @@ class ArCityRenderer(val activity: ArCityActivity) :
         for (i in 0 until 9 * 3) {
             sphericalHarmonicsCoefficients[i] = coefficients[i] * sphericalHarmonicFactors[i / 3]
         }
-        virtualObjectShader.setVec3Array(
-            "u_SphericalHarmonicsCoefficients",
-            sphericalHarmonicsCoefficients
-        )
-        cubeObjectShader.setVec3Array(
-            "u_SphericalHarmonicsCoefficients",
-            sphericalHarmonicsCoefficients
-        )
+
+        customShaders.forEach { shader ->
+            shader.setVec3Array("u_SphericalHarmonicsCoefficients", sphericalHarmonicsCoefficients)
+        }
     }
 
     // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.
@@ -728,6 +730,11 @@ class Building(
     val scaleFactor: Float,
     val shader: Shader,
     val color: Int = ColorToInt.randomColor()
+)
+
+data class ArSceneObject (
+    val mesh: Mesh,
+    val shader: Shader
 )
 
 class ColorToInt {
