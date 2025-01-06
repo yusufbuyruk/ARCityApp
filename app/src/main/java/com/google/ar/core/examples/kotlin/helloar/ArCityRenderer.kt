@@ -572,6 +572,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 }
 
             virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectTexture)
+            */
 
 
             render.draw(virtualObject.mesh, virtualObject.shader, virtualSceneFramebuffer)
@@ -683,6 +684,9 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     // is InstantPlacementPoint -> true
                     // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
                     // is DepthPoint -> true
+
+                    // important feature | CubeObject is derived from Trackable class and is calculated hit result
+                    // is CubeObject -> false
                     else -> false
                 }
             }
