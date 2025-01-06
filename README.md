@@ -63,7 +63,7 @@ To enable AR functionality, follow these steps:
 - **Collision Checking:** Implement collision detection to avoid object overlap and improve interactions between objects in the AR environment.
 
 ## License  
-This project is licensed under the [MIT License](LICENSE).  
+This project is licensed under the [MIT License](./LICENSE.txt).  
 
 ## Credits  
 - Developed by **Yusuf Buyruk**  
