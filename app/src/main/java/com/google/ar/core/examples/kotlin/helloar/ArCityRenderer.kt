@@ -381,6 +381,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
         // has placed any objects.
         val message: String? =
             when {
+                cubeAnchors.isEmpty() -> "Tracking Horizontal Planes Surface Area | Target Surface Area ${TARGET_PLANE_AREA}"
+
                 camera.trackingState == TrackingState.PAUSED &&
                         camera.trackingFailureReason == TrackingFailureReason.NONE ->
                     activity.getString(R.string.searching_planes)
