@@ -394,6 +394,8 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     activity.getString(R.string.waiting_taps)
 
                 session.hasTrackingPlane() && wrappedAnchors.isNotEmpty() -> null
+
+
                 else -> activity.getString(R.string.searching_planes)
             }
         if (message == null) {
@@ -471,7 +473,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
             if (horizontalPlanes.isNotEmpty()) {
                 val plane: Plane = horizontalPlanes[0] /*planes.first()*/
 
-                val planeArea = plane.extentX * plane.extentZ
+                var planeArea = plane.extentX * plane.extentZ
 
                 // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
                 if (planeArea > TARGET_PLANE_AREA) {
@@ -507,12 +509,9 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     }
                 }
 
-
                 // val xAxis = centerPose.xAxis
                 // val yAxis = centerPose.yAxis
                 // val zAxis = centerPose.zAxis
-
-
             }
         }
 
