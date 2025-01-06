@@ -448,24 +448,28 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
         // Get camera matrix and draw.
         camera.getViewMatrix(viewMatrix, 0)
-        frame.acquirePointCloud().use { pointCloud ->
-            if (pointCloud.timestamp > lastPointCloudTimestamp) {
-                pointCloudVertexBuffer.set(pointCloud.points)
-                lastPointCloudTimestamp = pointCloud.timestamp
+
+        // draw planes and point clouds before first tap only
+        if (wrappedAnchors.isEmpty()) {
+            frame.acquirePointCloud().use { pointCloud ->
+                if (pointCloud.timestamp > lastPointCloudTimestamp) {
+                    pointCloudVertexBuffer.set(pointCloud.points)
+                    lastPointCloudTimestamp = pointCloud.timestamp
+                }
+                Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+                pointCloudShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
+                render.draw(pointCloudMesh, pointCloudShader)
             }
-            Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
-            pointCloudShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
-            render.draw(pointCloudMesh, pointCloudShader)
+
+
+            // Visualize planes.
+            planeRenderer.drawPlanes(
+                render,
+                session.getAllTrackables<Plane>(Plane::class.java),
+                camera.displayOrientedPose,
+                projectionMatrix
+            )
         }
-
-
-        // Visualize planes.
-        planeRenderer.drawPlanes(
-            render,
-            session.getAllTrackables<Plane>(Plane::class.java),
-            camera.displayOrientedPose,
-            projectionMatrix
-        )
 
         val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
 
