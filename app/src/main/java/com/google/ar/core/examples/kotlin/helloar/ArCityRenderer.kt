@@ -510,40 +510,45 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             val planeArea = plane.extentX * plane.extentZ
 
-            if (planeArea > 10) {
+            // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
+            if (planeArea > 2f) {
+
                 // initialize city
-            }
+                val gridSize = 4
+                val spacing = 0.5f
+                var centerPose = plane.centerPose
 
-            // val centerPose = plane.centerPose
+                val extentX = plane.extentX
+                val extentZ = plane.extentZ
 
-            //Pose.makeTranslation(tx, ty, tz)
-            //val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
-            /*
+                for (row in 0 until gridSize) {
+                    for (col in 0 until gridSize) {
+
+                        val tx = centerPose.tx() + (col - gridSize / 2) * spacing
+                        val tz = centerPose.tz() + (row - gridSize / 2) * spacing
+
+                        // world rotation
+                        val newPose = Pose.makeTranslation(tx, centerPose.ty(), tz)
+
+                        // alternative - local rotation
+                        // val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
+
                         if (plane.isPoseInPolygon(newPose)) {
                             val anchor = plane.createAnchor(newPose)
-                            placeObject(anchor)
+                            val cubeObject =
+                                CubeObject(anchor, plane, 1.5f, generatedShaders.random())
+                            //cubeObject.mesh = cubeObjectMesh
                         }
+                    }
+                }
+            }
 
-                        if (plane.isPoseInExtents(newPose))
-                        {
-
-                        }
-            */
 
             // val xAxis = centerPose.xAxis
             // val yAxis = centerPose.yAxis
             // val zAxis = centerPose.zAxis
 
-            // centerPose.tx()
-            // centerPose.ty()
-            // centerPose.tz()
 
-            // val centerPosition = centerPose.translation // world position
-
-            // val extentX = plane.extentX
-            // val extentZ = plane.extentZ
-
-            // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
         }
 
 
