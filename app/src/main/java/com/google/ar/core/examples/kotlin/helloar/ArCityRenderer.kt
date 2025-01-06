@@ -481,20 +481,22 @@ class ArCityRenderer(val activity: ArCityActivity) :
                         // alternative - local rotation
                         // val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
 
-                        if (plane.isPoseInPolygon(newPose)) {
-                            val anchor = plane.createAnchor(newPose)
-                            val cubeObject =
-                                CubeObject(anchor, plane, 1.5f, generatedShaders.random())
-                            //cubeObject.mesh = cubeObjectMesh
+                            if (plane.isPoseInPolygon(newPose)) {
+                                val anchor = plane.createAnchor(newPose)
+                                val randomScaleFactor = 1.0f + Random.nextFloat() * (4.0f - 1.0f)
+                                val cubeObject =
+                                    CubeObject(anchor, plane, randomScaleFactor, generatedShaders.random())
+                                val cubeAnchor = CubeAnchor(anchor, plane, cubeObject)
+                                cubeAnchors.add(cubeAnchor)
+                            }
                         }
                     }
                 }
-            }
 
 
-            // val xAxis = centerPose.xAxis
-            // val yAxis = centerPose.yAxis
-            // val zAxis = centerPose.zAxis
+                // val xAxis = centerPose.xAxis
+                // val yAxis = centerPose.yAxis
+                // val zAxis = centerPose.zAxis
 
 
             }
