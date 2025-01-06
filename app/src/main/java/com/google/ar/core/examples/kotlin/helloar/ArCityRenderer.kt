@@ -368,8 +368,11 @@ class ArCityRenderer(val activity: ArCityActivity) :
             }
         }
 
-        // Handle one tap per frame.
-        handleTap(frame, camera)
+        if (cubeAnchors.isNotEmpty())
+        {
+            // Handle one tap per frame.
+            handleTap(frame, camera)
+        }
 
         // Keep the screen unlocked while tracking, but allow it to lock when tracking stops.
         trackingStateHelper.updateKeepScreenOnFlag(camera.trackingState)
