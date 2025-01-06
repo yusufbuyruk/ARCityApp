@@ -117,6 +117,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
     private val cubeObjects = mutableListOf<CubeObject>()
 
     private val wrappedAnchors = mutableListOf<WrappedAnchor>()
+    private val cubeAnchors = mutableListOf<CubeAnchor>()
 
     // Environmental HDR
     lateinit var dfgTexture: Texture
@@ -270,54 +271,17 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             customShaders.add(virtualObjectShader)
 
-/*
-            cubeObjectAlbedoTexture = Texture.createSolidColorTexture(
-                render,
-                ColorToInt.randomColor(),
-                Texture.WrapMode.CLAMP_TO_EDGE,
-                Texture.ColorFormat.SRGB
-            )
-            cubeObjectAlbedoInstantPlacementTexture = Texture.createSolidColorTexture(
-                render,
-                ColorToInt.color(120, 194, 123),
-                Texture.WrapMode.CLAMP_TO_EDGE,
-                Texture.ColorFormat.SRGB
-            )
-            val cubeObjectPbrTexture = Texture.createSolidColorTexture(
-                render,
-                ColorToInt.color(228, 228, 228),
-                Texture.WrapMode.CLAMP_TO_EDGE,
-                Texture.ColorFormat.SRGB
-            )
-
-            cubeObjectShader =
-                Shader.createFromAssets(
-                    render,
-                    "shaders/environmental_hdr.vert",
-                    "shaders/environmental_hdr.frag",
-                    mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
-                )
-                    .setTexture("u_AlbedoTexture", cubeObjectAlbedoTexture)
-                    .setTexture(
-                        "u_RoughnessMetallicAmbientOcclusionTexture",
-                        cubeObjectPbrTexture
-                    )
-                    .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
-                    .setTexture("u_DfgTexture", dfgTexture)
-*/
-
             cubeObjectMesh = Mesh.createFromAsset(render, "models/cube.obj")
 
-            for (i in 1..10)
-            {
+            for (i in 1..10) {
                 val shader = generateShader(render)
                 generatedShaders.add(shader)
                 customShaders.add(shader)
             }
 
-
             cubeObjectShader = generateShader(render)
             customShaders.add(cubeObjectShader)
+
 
         } catch (e: IOException) {
             Log.e(TAG, "Failed to read a required asset file", e)
@@ -465,7 +429,9 @@ class ArCityRenderer(val activity: ArCityActivity) :
             )
         }
 
-        val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
+        if (cubeAnchors.isEmpty()) {
+
+            val allPlanes: Collection<Plane> = session.getAllTrackables(Plane::class.java)
 
         // for ((index, plane) in allPlanes.withIndex()) { }
 
@@ -531,6 +497,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
             // val zAxis = centerPose.zAxis
 
 
+            }
         }
 
 
@@ -764,7 +731,13 @@ class ArCityRenderer(val activity: ArCityActivity) :
  */
 private data class WrappedAnchor(
     val anchor: Anchor,
+    val trackable: Trackable
+)
+
+private data class CubeAnchor(
+    val anchor: Anchor,
     val trackable: Trackable,
+    val cubeObject: CubeObject
 )
 
 
