@@ -481,9 +481,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     val spacing = SPACING
                     var centerPose = plane.centerPose
 
-                    val extentX = plane.extentX
-                    val extentZ = plane.extentZ
-
                     for (row in 0 until gridSize) {
                         for (col in 0 until gridSize) {
 
@@ -685,9 +682,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     // is InstantPlacementPoint -> true
                     // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
                     // is DepthPoint -> true
-
-                    // important feature | CubeObject is derived from Trackable class and is calculated hit result
-                    // is CubeObject -> false
                     else -> false
                 }
             }
