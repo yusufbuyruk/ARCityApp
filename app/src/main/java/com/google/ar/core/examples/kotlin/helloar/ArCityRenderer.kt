@@ -254,8 +254,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     Texture.ColorFormat.LINEAR
                 )
 
-            virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
-            virtualObjectShader =
             val virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
             val virtualObjectShader =
                 Shader.createFromAssets(
