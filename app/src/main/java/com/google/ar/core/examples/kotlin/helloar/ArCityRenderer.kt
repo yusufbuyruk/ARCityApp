@@ -26,6 +26,7 @@ import com.google.ar.core.Frame
 import com.google.ar.core.InstantPlacementPoint
 import com.google.ar.core.LightEstimate
 import com.google.ar.core.Plane
+import com.google.ar.core.Pose
 import com.google.ar.core.Session
 import com.google.ar.core.Trackable
 import com.google.ar.core.TrackingFailureReason
@@ -275,6 +276,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             customShaders.add(virtualObjectShader)
 
+/*
             cubeObjectAlbedoTexture = Texture.createSolidColorTexture(
                 render,
                 ColorToInt.randomColor(),
@@ -293,6 +295,22 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
+
+            cubeObjectShader =
+                Shader.createFromAssets(
+                    render,
+                    "shaders/environmental_hdr.vert",
+                    "shaders/environmental_hdr.frag",
+                    mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
+                )
+                    .setTexture("u_AlbedoTexture", cubeObjectAlbedoTexture)
+                    .setTexture(
+                        "u_RoughnessMetallicAmbientOcclusionTexture",
+                        cubeObjectPbrTexture
+                    )
+                    .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
+                    .setTexture("u_DfgTexture", dfgTexture)
+*/
 
             cubeObjectMesh = Mesh.createFromAsset(render, "models/cube.obj")
 
