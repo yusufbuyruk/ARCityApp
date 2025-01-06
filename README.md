@@ -13,11 +13,11 @@
 
 ## Screenshots
 
-[![AR City Builder](readme-images/ar-city-app-01.png)]
+![AR City Builder](readme-images/ar-city-app-01.png)
 
-[![AR City Builder](readme-images/ar-city-app-02.png)]
+![AR City Builder](readme-images/ar-city-app-02.png)
 
-[![AR City Builder](readme-images/ar-city-app-03.png)]
+![AR City Builder](readme-images/ar-city-app-03.png)
 
 ## Features  
 - **Floor Detection:** Anchors a virtual city on detected floors.  
