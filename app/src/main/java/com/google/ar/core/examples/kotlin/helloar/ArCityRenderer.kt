@@ -548,6 +548,22 @@ class ArCityRenderer(val activity: ArCityActivity) :
             //render.draw(cubeObjectMesh, cubeObjectShader, virtualSceneFramebuffer)
         }
 
+        for ((anchor, trackable, cubeObject) in cubeAnchors.filter { it.anchor.trackingState == TrackingState.TRACKING }) {
+            anchor.pose.toMatrix(modelMatrix, 0)
+
+            Matrix.scaleM(modelMatrix, 0, 1f, cubeObject.scaleFactor, 1f)
+
+            Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0)
+            Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0)
+
+            customShaders.forEach { shader ->
+                shader.setMat4("u_ModelView", modelViewMatrix)
+                shader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
+            }
+
+            render.draw(cubeObjectMesh, cubeObject.shader, virtualSceneFramebuffer)
+        }
+
 
         // Compose the virtual scene with the background.
         backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, Z_NEAR, Z_FAR)
