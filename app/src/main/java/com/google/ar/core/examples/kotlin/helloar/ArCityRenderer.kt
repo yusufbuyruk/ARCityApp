@@ -562,8 +562,6 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
             /*
             // Update shader properties and draw
-            virtualObjectShader.setMat4("u_ModelView", modelViewMatrix)
-            virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
             val virtualObjectTexture =
                 if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
                     InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
