@@ -22,12 +22,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.ar.core.Anchor
 import com.google.ar.core.Camera
-import com.google.ar.core.DepthPoint
 import com.google.ar.core.Frame
 import com.google.ar.core.InstantPlacementPoint
 import com.google.ar.core.LightEstimate
 import com.google.ar.core.Plane
-import com.google.ar.core.Point
 import com.google.ar.core.Session
 import com.google.ar.core.Trackable
 import com.google.ar.core.TrackingFailureReason
@@ -49,6 +47,7 @@ import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
 import kotlin.random.Random
+
 
 /** Renders the HelloAR application using our example Renderer. */
 class ArCityRenderer(val activity: ArCityActivity) :
@@ -224,45 +223,31 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     null,
                     pointCloudVertexBuffers
                 )
-            /*
-                  // Virtual object to render (ARCore pawn)
-                  virtualObjectAlbedoTexture =
-                    Texture.createFromAsset(
-                      render,
-                      "models/pawn_albedo.png",
-                      Texture.WrapMode.CLAMP_TO_EDGE,
-                      Texture.ColorFormat.SRGB
-                    )
 
-                  virtualObjectAlbedoInstantPlacementTexture =
-                    Texture.createFromAsset(
-                      render,
-                      "models/pawn_albedo_instant_placement.png",
-                      Texture.WrapMode.CLAMP_TO_EDGE,
-                      Texture.ColorFormat.SRGB
-                    )
-
-                  val virtualObjectPbrTexture =
-                    Texture.createFromAsset(
-                      render,
-                      "models/pawn_roughness_metallic_ao.png",
-                      Texture.WrapMode.CLAMP_TO_EDGE,
-                      Texture.ColorFormat.LINEAR
-                    )
-             */
-
+            // Virtual object to render (ARCore pawn)
             virtualObjectAlbedoTexture =
-                Texture(render, Texture.Target.TEXTURE_2D, Texture.WrapMode.CLAMP_TO_EDGE)
+                Texture.createFromAsset(
+                    render,
+                    "models/pawn_albedo.png",
+                    Texture.WrapMode.CLAMP_TO_EDGE,
+                    Texture.ColorFormat.SRGB
+                )
+
             virtualObjectAlbedoInstantPlacementTexture =
-                Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
+                Texture.createFromAsset(
+                    render,
+                    "models/pawn_albedo_instant_placement.png",
+                    Texture.WrapMode.CLAMP_TO_EDGE,
+                    Texture.ColorFormat.SRGB
+                )
+
             val virtualObjectPbrTexture =
-                Texture(render, Texture.Target.TEXTURE_CUBE_MAP, Texture.WrapMode.CLAMP_TO_EDGE)
-            virtualObjectAlbedoTexture = Texture.createSolidColorTexture(
-                render,
-                RandomColor.nextColor(),// 0xFFFF0000.toInt(),
-                Texture.WrapMode.CLAMP_TO_EDGE,
-                Texture.ColorFormat.LINEAR
-            )
+                Texture.createFromAsset(
+                    render,
+                    "models/pawn_roughness_metallic_ao.png",
+                    Texture.WrapMode.CLAMP_TO_EDGE,
+                    Texture.ColorFormat.LINEAR
+                )
 
             virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
             virtualObjectShader =
@@ -280,7 +265,40 @@ class ArCityRenderer(val activity: ArCityActivity) :
                     .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
                     .setTexture("u_DfgTexture", dfgTexture)
 
+            cubeObjectAlbedoTexture = Texture.createSolidColorTexture(
+                render,
+                ColorToInt.randomColor(),
+                Texture.WrapMode.CLAMP_TO_EDGE,
+                Texture.ColorFormat.SRGB
+            )
+            cubeObjectAlbedoInstantPlacementTexture = Texture.createSolidColorTexture(
+                render,
+                ColorToInt.color(120, 194, 123),
+                Texture.WrapMode.CLAMP_TO_EDGE,
+                Texture.ColorFormat.SRGB
+            )
+            val cubeObjectPbrTexture = Texture.createSolidColorTexture(
+                render,
+                ColorToInt.color(228, 228, 228),
+                Texture.WrapMode.CLAMP_TO_EDGE,
+                Texture.ColorFormat.SRGB
+            )
+
             cubeObjectMesh = Mesh.createFromAsset(render, "models/cube.obj")
+            cubeObjectShader =
+                Shader.createFromAssets(
+                    render,
+                    "shaders/environmental_hdr.vert",
+                    "shaders/environmental_hdr.frag",
+                    mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
+                )
+                    .setTexture("u_AlbedoTexture", cubeObjectAlbedoTexture)
+                    .setTexture(
+                        "u_RoughnessMetallicAmbientOcclusionTexture",
+                        cubeObjectPbrTexture
+                    )
+                    .setTexture("u_Cubemap", cubemapFilter.filteredCubemapTexture)
+                    .setTexture("u_DfgTexture", dfgTexture)
 
         } catch (e: IOException) {
             Log.e(TAG, "Failed to read a required asset file", e)
@@ -433,8 +451,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 continue
             }
             if (plane.type == Plane.Type.HORIZONTAL_UPWARD_FACING) {
-                if (!horizontalPlanes.contains(plane))
-                {
+                if (!horizontalPlanes.contains(plane)) {
                     horizontalPlanes.add(plane)
                     // activity.view.snackbarHelper.showMessage(activity, "Plane Count ${horizontalPlanes.size} | extendX: ${plane.extentX} extendY: ${plane.extentZ} centerPose: ${plane.centerPose.translation}")
                 }
@@ -449,8 +466,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
 
         val sb = StringBuilder()
 
-        for (horizontalPlane in horizontalPlanes)
-        {
+        for (horizontalPlane in horizontalPlanes) {
             sb.append("${horizontalPlane.centerPose.translation[1]} | ")
             // sb.append("${horizontalPlane.extentZ * horizontalPlane.extentX} | ")
             /*
@@ -466,42 +482,46 @@ class ArCityRenderer(val activity: ArCityActivity) :
         // activity.view.snackbarHelper.showMessage(activity, "${horizontalPlanes.size} | centerPose: $sb")
 
 
-        if (horizontalPlanes.isNotEmpty())
-        {
+        if (horizontalPlanes.isNotEmpty()) {
             val plane: Plane = horizontalPlanes[0] /*planes.first()*/
 
-            val centerPose = plane.centerPose
+            val planeArea = plane.extentX * plane.extentZ
+
+            if (planeArea > 10) {
+                // initialize city
+            }
+
+            // val centerPose = plane.centerPose
 
             //Pose.makeTranslation(tx, ty, tz)
             //val newPose = centerPose.compose(Pose.makeTranslation(tx, ty, tz))
-/*
-            if (plane.isPoseInPolygon(newPose)) {
-                val anchor = plane.createAnchor(newPose)
-                placeObject(anchor)
-            }
+            /*
+                        if (plane.isPoseInPolygon(newPose)) {
+                            val anchor = plane.createAnchor(newPose)
+                            placeObject(anchor)
+                        }
 
-            if (plane.isPoseInExtents(newPose))
-            {
+                        if (plane.isPoseInExtents(newPose))
+                        {
 
-            }
-*/
+                        }
+            */
 
-            val xAxis = centerPose.xAxis
-            val yAxis = centerPose.yAxis
-            val zAxis = centerPose.zAxis
+            // val xAxis = centerPose.xAxis
+            // val yAxis = centerPose.yAxis
+            // val zAxis = centerPose.zAxis
 
             // centerPose.tx()
             // centerPose.ty()
             // centerPose.tz()
 
-            val centerPosition = centerPose.translation // world position
+            // val centerPosition = centerPose.translation // world position
 
-            val extentX = plane.extentX
-            val extentZ = plane.extentZ
+            // val extentX = plane.extentX
+            // val extentZ = plane.extentZ
 
             // activity.view.snackbarHelper.showMessage(activity, "Plane Surface Area ${plane.extentX * plane.extentZ} | Z: ${plane.centerPose.translation[1]}")
         }
-
 
 
         // -- Draw occluded virtual objects
@@ -528,7 +548,7 @@ class ArCityRenderer(val activity: ArCityActivity) :
             // Update shader properties and draw
             virtualObjectShader.setMat4("u_ModelView", modelViewMatrix)
             virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
-            val texture =
+            val virtualObjectTexture =
                 if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
                     InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
                 ) {
@@ -536,9 +556,25 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 } else {
                     virtualObjectAlbedoTexture
                 }
-            virtualObjectShader.setTexture("u_AlbedoTexture", texture)
 
-            render.draw(cubeObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
+            virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectTexture)
+
+
+            cubeObjectShader.setMat4("u_ModelView", modelViewMatrix)
+            cubeObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix)
+            val cubeObjectTexture =
+                if ((trackable as? InstantPlacementPoint)?.trackingMethod ==
+                    InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE
+                ) {
+                    cubeObjectAlbedoInstantPlacementTexture
+                } else {
+                    cubeObjectAlbedoTexture
+                }
+
+            cubeObjectShader.setTexture("u_AlbedoTexture", cubeObjectTexture)
+
+            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
+            // render.draw(cubeObjectMesh, cubeObjectShader, virtualSceneFramebuffer)
         }
 
 
@@ -554,11 +590,14 @@ class ArCityRenderer(val activity: ArCityActivity) :
     private fun updateLightEstimation(lightEstimate: LightEstimate, viewMatrix: FloatArray) {
         if (lightEstimate.state != LightEstimate.State.VALID) {
             virtualObjectShader.setBool("u_LightEstimateIsValid", false)
+            cubeObjectShader.setBool("u_LightEstimateIsValid", false)
             return
         }
         virtualObjectShader.setBool("u_LightEstimateIsValid", true)
+        cubeObjectShader.setBool("u_LightEstimateIsValid", true)
         Matrix.invertM(viewInverseMatrix, 0, viewMatrix, 0)
         virtualObjectShader.setMat4("u_ViewInverse", viewInverseMatrix)
+        cubeObjectShader.setMat4("u_ViewInverse", viewInverseMatrix)
         updateMainLight(
             lightEstimate.environmentalHdrMainLightDirection,
             lightEstimate.environmentalHdrMainLightIntensity,
@@ -579,7 +618,9 @@ class ArCityRenderer(val activity: ArCityActivity) :
         worldLightDirection[2] = direction[2]
         Matrix.multiplyMV(viewLightDirection, 0, viewMatrix, 0, worldLightDirection, 0)
         virtualObjectShader.setVec4("u_ViewLightDirection", viewLightDirection)
+        cubeObjectShader.setVec4("u_ViewLightDirection", viewLightDirection)
         virtualObjectShader.setVec3("u_LightIntensity", intensity)
+        cubeObjectShader.setVec3("u_LightIntensity", intensity)
     }
 
     private fun updateSphericalHarmonicsCoefficients(coefficients: FloatArray) {
@@ -608,6 +649,10 @@ class ArCityRenderer(val activity: ArCityActivity) :
             "u_SphericalHarmonicsCoefficients",
             sphericalHarmonicsCoefficients
         )
+        cubeObjectShader.setVec3Array(
+            "u_SphericalHarmonicsCoefficients",
+            sphericalHarmonicsCoefficients
+        )
     }
 
     // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.
@@ -622,22 +667,22 @@ class ArCityRenderer(val activity: ArCityActivity) :
                 frame.hitTest(tap)
             }
 
-            // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, Depth Point,
-            // or Instant Placement Point.
-            val firstHitResult =
-              hitResultList.firstOrNull { hit ->
+        // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, Depth Point,
+        // or Instant Placement Point.
+        val firstHitResult =
+            hitResultList.firstOrNull { hit ->
                 when (val trackable = hit.trackable!!) {
-                  is Plane ->
-                    trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING &&
-                    trackable.isPoseInPolygon(hit.hitPose) &&
-                      PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
-                  // is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
-                  // is InstantPlacementPoint -> true
-                  // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
-                  // is DepthPoint -> true
-                  else -> false
+                    is Plane ->
+                        trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING &&
+                                trackable.isPoseInPolygon(hit.hitPose) &&
+                                PlaneRenderer.calculateDistanceToPlane(hit.hitPose, camera.pose) > 0
+                    // is Point -> trackable.orientationMode == Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
+                    // is InstantPlacementPoint -> true
+                    // DepthPoints are only returned if Config.DepthMode is set to AUTOMATIC.
+                    // is DepthPoint -> true
+                    else -> false
                 }
-              }
+            }
 
 
         if (firstHitResult != null) {
@@ -682,17 +727,22 @@ class Building(
     val plane: Plane,
     val scaleFactor: Float,
     val shader: Shader,
-    val color: Int = RandomColor.nextColor()
+    val color: Int = ColorToInt.randomColor()
 )
 
-class RandomColor {
+class ColorToInt {
     companion object {
-        fun nextColor(): Int {
+        fun randomColor(): Int {
             val alpha = 0xFF
             val red = Random.nextInt(0, 256)
             val green = Random.nextInt(0, 256)
             val blue = Random.nextInt(0, 256)
 
+            return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+        }
+
+        fun color(red: Int, green: Int, blue: Int): Int {
+            val alpha = 0xFF
             return (alpha shl 24) or (red shl 16) or (green shl 8) or blue
         }
     }
